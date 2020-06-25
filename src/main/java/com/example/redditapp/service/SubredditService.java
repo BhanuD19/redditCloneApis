@@ -28,7 +28,6 @@ public class SubredditService {
     return subRedditDto;
   }
 
-  @Transactional(readOnly = true)
   public List<SubRedditDto> getAll() {
     return subredditRepository.findAll()
       .stream()
@@ -36,11 +35,9 @@ public class SubredditService {
       .collect(Collectors.toList());
   }
 
-  @Transactional(readOnly = true)
   public SubRedditDto getSubreddit(Long id) {
     Subreddit subreddit = subredditRepository.findById(id)
       .orElseThrow(() -> new SubredditNotFoundException("Subreddit with id "+ id+ " not found"));
     return subredditMapper.mapSubredditToDto(subreddit);
   }
-
 }

@@ -14,20 +14,19 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @Slf4j
-public class MailService {
+class MailService {
 
   private final JavaMailSender mailSender;
   private final MailContentBuilder mailContentBuilder;
 
   @Async
-  public void sendMail(NotificationEmail notificationEmail) {
+  void sendMail(NotificationEmail notificationEmail) {
     MimeMessagePreparator messagePreparator = mimeMessage -> {
       MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
       messageHelper.setFrom("reddit@email.com");
       messageHelper.setTo(notificationEmail.getRecipient());
       messageHelper.setSubject(notificationEmail.getSubject());
       messageHelper.setText(mailContentBuilder.build(notificationEmail.getBody()));
-
     };
     try {
       mailSender.send(messagePreparator);
@@ -35,6 +34,5 @@ public class MailService {
     } catch (MailException e) {
       throw new RedditException("Exception occured when sending mail to"+ notificationEmail.getRecipient());
     }
-
   }
 }

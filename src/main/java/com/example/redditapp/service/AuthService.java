@@ -14,10 +14,10 @@ import com.example.redditapp.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationProvider;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,6 +31,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 @Slf4j
+@Transactional
 public class AuthService {
 
   private final PasswordEncoder passwordEncoder;
@@ -41,7 +42,7 @@ public class AuthService {
   private final JwtProvider jwtProvider;
   private final RefreshTokenService refreshTokenService;
 
-  @Transactional
+
   public void signup(RegisterRequest registerRequest){
     User user = new User();
     user.setUsername(registerRequest.getUsername());
@@ -85,7 +86,6 @@ public class AuthService {
     fetchUserAndEnable(verificationTokenOptional.orElseThrow(() -> new RedditException("Invalid token")));
   }
 
-  @Transactional
   public void fetchUserAndEnable(VerificationToken verificationToken) {
     String username = verificationToken.getUser().getUsername();
     User user = userRepository.findByUsername(username).orElseThrow(() -> new RedditException("User with name " + username + " not found"));
@@ -125,6 +125,6 @@ public class AuthService {
 
   public boolean isLoggedIn() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    return !(authentication instanceof AnonymousAuthenticationProvider) && authentication.isAuthenticated();
+    return !(authentication instanceof AnonymousAuthenticationToken) && authentication.isAuthenticated();
   }
 }
