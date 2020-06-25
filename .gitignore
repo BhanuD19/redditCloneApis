@@ -28,5 +28,5 @@ hs_err_pid*
 #Property files
 *.properties2
 
-#Build files
-/target
+#Buildfiles
+/target/
