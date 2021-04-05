@@ -28,6 +28,7 @@ public class SubredditService {
     return subRedditDto;
   }
 
+  @Transactional(readOnly = true)
   public List<SubRedditDto> getAll() {
     return subredditRepository.findAll()
       .stream()

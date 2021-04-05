@@ -52,6 +52,7 @@ public class JwtProvider {
       .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationInMillis)))
       .compact();
   }
+
   public Long getJwtExpirationInMillis() {
     return jwtExpirationInMillis;
   }

@@ -13,7 +13,6 @@ import com.example.redditapp.repository.VerificationTokenRepository;
 import com.example.redditapp.security.JwtProvider;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,7 +59,7 @@ public class AuthService {
     String token = generateVerificationToken(user);
     mailService.sendMail(new NotificationEmail("Please Activate your Account", user.getEmail(),
       "Thank you for signing up with us, please click on the below url to activate your account :" + "http://localhost:8080/api/auth/accountverification/" +token));
-
+    log.info(token);
     }
 
   private String generateVerificationToken(User user) {
@@ -82,7 +81,6 @@ public class AuthService {
 
   public void verifyAccount(String token) {
     Optional<VerificationToken> verificationTokenOptional= verificationTokenRepository.findByToken(token);
-    verificationTokenOptional.orElseThrow(() -> new RedditException("Invalid token"));
     fetchUserAndEnable(verificationTokenOptional.orElseThrow(() -> new RedditException("Invalid token")));
   }
 
@@ -102,7 +100,7 @@ public class AuthService {
         loginRequest.getPassword()));
       SecurityContextHolder.getContext().setAuthentication(authenticate);
       String authenticationToken= jwtProvider.generateToken(authenticate);
-    System.out.println("this is the authenticatoion token" + authenticationToken);
+
 
     return new AuthenticationResponse().builder()
       .authenticationToken(authenticationToken)

@@ -10,6 +10,7 @@ import com.example.redditapp.repository.CommentRepository;
 import com.example.redditapp.repository.PostRepository;
 import com.example.redditapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @Transactional
+@Slf4j
 public class CommentService {
 
   private final PostRepository postRepository;
@@ -29,9 +31,10 @@ public class CommentService {
   private final CommentRepository commentRepository;
 
   public void save(CommentDto commentDto) {
-    Post post= postRepository.findById(commentDto.getId())
+    Post post= postRepository.findById(commentDto.getPostId())
       .orElseThrow(() -> new PostNotFoundException("Post with id "+ commentDto.getPostId()+ " not found"));
     Comment comment = commentMapper.map(commentDto, post, authService.getCurrentUser());
+    log.info("comment to save:" + comment);
     commentRepository.save(comment);
   }
 

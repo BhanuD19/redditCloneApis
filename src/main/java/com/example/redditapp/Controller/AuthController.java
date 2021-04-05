@@ -35,9 +35,7 @@ public class AuthController {
 
   @PostMapping("/login")
   public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
-      AuthenticationResponse auth= authService.login(loginRequest);
-    System.out.println("This is the authentcation response to return to the client" + auth);
-    return auth;
+    return authService.login(loginRequest);
   }
 
   @PostMapping("/refresh/token")
